@@ -1,14 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Filmweb.Entities;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 
 namespace Filmweb.Controllers
 {
     [Route("api/[controller]")]
     public class ValuesController : Controller
     {
+        private FilmwebContext _context;
+
+        public ValuesController(FilmwebContext context)
+        {
+            _context = context;
+        }
+
         // GET api/values
         [HttpGet]
         public IEnumerable<string> Get()

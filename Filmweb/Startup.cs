@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Filmweb.Entities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -24,6 +26,10 @@ namespace Filmweb
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+
+            // Entity Framework
+            string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Integrated Security=True;Database=FilmwebDB;";
+            services.AddDbContext<FilmwebContext>(o => o.UseSqlServer(connectionString));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
