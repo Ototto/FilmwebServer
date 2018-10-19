@@ -1,6 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Filmweb.Entities;
+using Microsoft.EntityFrameworkCore;
 
-namespace Filmweb.Entities
+namespace Filmweb.Helpers
 {
     public class FilmwebContext : DbContext
     {

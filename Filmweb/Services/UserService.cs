@@ -3,6 +3,7 @@ using Filmweb.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Filmweb.Helpers;
 
 namespace Filmweb.Services
 {
@@ -46,8 +47,9 @@ namespace Filmweb.Services
             if (string.IsNullOrEmpty(password))
                 throw new ArgumentNullException("Password is required");
 
+            // Try catch is special for that, at the calling method
             if (_context.Users.Any(u => u.Email == user.Email))
-                throw new ApplicationException("Email \"" + user.Email + "\" is already taken");
+                throw new ApplicationException("Email \"" + user.Email + "\" is already taken"); 
 
             byte[] passwordHash, passwordSalt;
             CreatePasswordHash(password, out passwordHash, out passwordSalt);
