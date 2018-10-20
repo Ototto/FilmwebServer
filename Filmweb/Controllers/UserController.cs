@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Filmweb.Dtos;
 using Filmweb.Entities;
+using Filmweb.Extensions;
 using Filmweb.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -44,7 +45,8 @@ namespace Filmweb.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("authenticate")] // api/user/authenticate
+        [HttpPost("authenticate")]
+        // api/user/authenticate
         public IActionResult Authenticate(UserDto userDto)
         {
             User user = _userService.Authenticate(userDto.Email, userDto.Password);
@@ -79,7 +81,7 @@ namespace Filmweb.Controllers
         public IActionResult Update(UserDto userDto)
         {
             User user = _mapper.Map<User>(userDto);
-            user.Id = int.Parse(User.Identity.Name);
+            user.Id = User.Identity.GetUserId();
 
             try
             {
