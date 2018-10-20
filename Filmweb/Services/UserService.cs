@@ -1,9 +1,9 @@
 ﻿using Filmweb.Entities;
+using Filmweb.Helpers;
 using Filmweb.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Filmweb.Helpers;
 
 namespace Filmweb.Services
 {
@@ -16,12 +16,12 @@ namespace Filmweb.Services
             _context = context;
         }
 
-        public User Authenticate(string username, string password)
+        public User Authenticate(string email, string password)
         {
-            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(username))
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(email))
                 return null;
 
-            User user = _context.Users.SingleOrDefault(u => u.Name == username);
+            User user = _context.Users.SingleOrDefault(u => u.Email == email);
 
             if (user == null)
                 return null;
@@ -49,7 +49,7 @@ namespace Filmweb.Services
 
             // Try catch is special for that, at the calling method
             if (_context.Users.Any(u => u.Email == user.Email))
-                throw new ApplicationException("Email \"" + user.Email + "\" is already taken"); 
+                throw new ApplicationException("Email " + user.Email + " is already taken");
 
             byte[] passwordHash, passwordSalt;
             CreatePasswordHash(password, out passwordHash, out passwordSalt);

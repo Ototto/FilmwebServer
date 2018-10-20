@@ -2,28 +2,30 @@
 using Filmweb.Dtos;
 using Filmweb.Entities;
 using Filmweb.Helpers;
-using Filmweb.Services;
+using Filmweb.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
 namespace Filmweb.Controllers
 {
+    [Authorize]
     [Produces("application/json")]
     [Route("api/User")]
     public class UserController : Controller
     {
-        private readonly UserService _userService;
+        private readonly IUserService _userService;
         private readonly AppSettings _appSettings;
         private readonly IMapper _mapper;
 
         // IOptions allow us to convert appsettings.json to any object
-        public UserController(UserService userService, IOptions<AppSettings> appSettings, IMapper mapper)
+        public UserController(IUserService userService, IOptions<AppSettings> appSettings, IMapper mapper)
         {
             _userService = userService;
             _appSettings = appSettings.Value;
@@ -34,7 +36,7 @@ namespace Filmweb.Controllers
         public IActionResult GetAll()
         {
             var users = _userService.GetAll();
-            var userDtos = _mapper.Map<UserDto>(users);
+            var userDtos = _mapper.Map<IList<UserDto>>(users);
 
             return Ok(userDtos);
         }
@@ -49,14 +51,13 @@ namespace Filmweb.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("authenticate")]
-        // api/user/authenticate
+        [HttpPost("authenticate")] // api/user/authenticate
         public IActionResult Authenticate(UserDto userDto)
         {
-            User user = _userService.Authenticate(userDto.Name, userDto.Password);
+            User user = _userService.Authenticate(userDto.Email, userDto.Password);
 
             if (user == null)
-                return BadRequest(new { message = "Username or password is incorrect" });
+                return BadRequest(new { message = "Email or password is incorrect" });
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
