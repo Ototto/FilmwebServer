@@ -74,6 +74,7 @@ namespace Filmweb
                     };
                 });
 
+            // DI definitions
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<ITokenProvider, TokenProvider>();
         }

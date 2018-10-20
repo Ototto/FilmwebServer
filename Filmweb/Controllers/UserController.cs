@@ -18,7 +18,6 @@ namespace Filmweb.Controllers
         private readonly ITokenProvider _tokenProvider;
         private readonly IMapper _mapper;
 
-        // IOptions allow us to convert appsettings.json to any object
         public UserController(IUserService userService, IMapper mapper, ITokenProvider tokenProvider)
         {
             _userService = userService;
@@ -53,17 +52,8 @@ namespace Filmweb.Controllers
             if (user == null)
                 return BadRequest(new { message = "Email or password is incorrect" });
 
-            string token = _tokenProvider.GetNew(user.Id);
-
-            var model = new UserDto
-            {
-                Id = user.Id,
-                Admin = user.Admin,
-                Email = user.Email,
-                Token = token,
-                Name = user.Name,
-                Surname = user.Surname
-            };
+            var model = _mapper.Map<UserDto>(user);
+            model.Token = _tokenProvider.GetNew(user.Id);
 
             return Ok(model);
         }
@@ -88,10 +78,11 @@ namespace Filmweb.Controllers
         [HttpPut]
         public IActionResult Update(UserDto userDto)
         {
+            User user = _mapper.Map<User>(userDto);
+            user.Id = int.Parse(User.Identity.Name);
+
             try
             {
-                User user = _mapper.Map<User>(userDto);
-                user.Id = int.Parse(User.Identity.Name);
                 _userService.Update(user, userDto.Password);
                 return Ok();
             }
@@ -104,6 +95,8 @@ namespace Filmweb.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
+            // TODO only for admin
+
             _userService.Delete(id);
             return Ok();
         }

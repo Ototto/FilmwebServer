@@ -1,10 +1,10 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Filmweb.Interfaces;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Filmweb.Interfaces;
 
 namespace Filmweb.Helpers
 {
@@ -12,6 +12,7 @@ namespace Filmweb.Helpers
     {
         private readonly AppSettings _appSettings;
 
+        // IOptions allow us to convert appsettings.json to any object
         public TokenProvider(IOptions<AppSettings> appSettings)
         {
             _appSettings = appSettings.Value;
